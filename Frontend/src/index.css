@@ -1,0 +1,41 @@
+@font-face {
+    font-family: "Montserrat";
+    src: url('client\src\components\assets\fonts\Montserrat-VariableFont_wght.ttf') format('tff');
+    font-weight: 100 900;
+  }
+  
+  @font-face {
+    font-family: "Montserrat";
+    src: url('client\src\components\assets\fonts\Montserrat-Regular.ttf') format('truetype');
+    font-style: normal;
+    font-weight: 400;
+  }
+  
+  @font-face {
+    font-family: "Montserrat";
+    src: url('client\src\components\assets\fonts\Montserrat-Medium.ttf') format('truetype');
+    font-style: normal;
+    font-weight: 500;
+  }
+  
+  @font-face {
+    font-family: "Montserrat";
+    src: url('client\src\components\assets\fonts\Montserrat-Light.ttf') format('truetype');
+    font-style: normal;
+    font-weight: 300;
+  }
+  
+  @font-face {
+    font-family: "Montserrat";
+    src: url('client\src\components\assets\fonts\Montserrat-Bold.ttf') format('truetype');
+    font-style: normal;
+    font-weight: 700;
+  }
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.toastBody {
+  font-family: "Atlas Grotesk Web", Arial, Helvetica, sans-serif;
+  font-size: 0.875rem;
+}
