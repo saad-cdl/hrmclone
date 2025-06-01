@@ -6,9 +6,11 @@ import { toast } from 'react-toastify';
 const EmpAttendance = () => {
     const baseurl = 'http://localhost:8000/HRMS/api/';
     const [employeeData, setEmployeeData] = useState({});
-    const [attendanceData, setAttendanceData] = useState({});
-    const [attendanceStatus, setAttendanceStatus] = useState('');
-    // const [status, setAttendanceStatus] = useState('');
+    const [attendanceData, setAttendanceData] = useState({
+        checkIn: null,
+        checkOut: null,
+        status: 'Not Checked In'
+    });
 
     const workStartTime = new Date();
     workStartTime.setHours(9, 0, 0); // 9 AM
@@ -47,7 +49,7 @@ const EmpAttendance = () => {
     }, []);
 
     // Handle check-in action
-    const handleCheckIn = async () => {
+    const handleCheckIn = () => {
         const currentTime = new Date();
 
         if (!isWithinWorkHours(currentTime)) {
@@ -55,19 +57,16 @@ const EmpAttendance = () => {
             return;
         }
 
-        try {
-            const response = await axios.post(baseurl + '/attendance/checkin', { 'checkin': currentTime.toISOString() }, { withCredentials: true });
-            setAttendanceStatus('Checked In');
-            console.log('Checked in successfully:', response.data);
-            toast.success('Checked in successfully');
-        } catch (error) {
-            toast.error(error.response.data.message);
-            console.error('Error during check-in:', error);
-        }
+        setAttendanceData({
+            ...attendanceData,
+            checkIn: currentTime,
+            status: 'Checked In'
+        });
+        toast.success('Checked in successfully');
     };
 
     // Handle check-out action
-    const handleCheckOut = async () => {
+    const handleCheckOut = () => {
         const currentTime = new Date();
 
         if (!isWithinWorkHours(currentTime)) {
@@ -75,15 +74,12 @@ const EmpAttendance = () => {
             return;
         }
 
-        try {
-            const response = await axios.post(baseurl + '/attendance/checkout', { 'checkout': currentTime.toISOString() }, { withCredentials: true });
-            setAttendanceStatus('Checked Out');
-            console.log('Checked out successfully:', response.data);
-            toast.success('Checked out successfully');
-        } catch (error) {
-            toast.error(error.response.data.message);
-            console.error('Error during check-out:', error);
-        }
+        setAttendanceData({
+            ...attendanceData,
+            checkOut: currentTime,
+            status: 'Checked Out'
+        });
+        toast.success('Checked out successfully');
     };
 
     return (
@@ -154,7 +150,7 @@ const EmpAttendance = () => {
                     </button>
                 </div>
                 <div className="text-center mt-4">
-                    <p className="text-green-500">{attendanceStatus}</p>
+                    <p className="text-green-500">{attendanceData.status}</p>
                 </div>
             </div>
         </div>

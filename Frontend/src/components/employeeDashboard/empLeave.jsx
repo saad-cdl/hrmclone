@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 const EmpLeave = () => {
     const [employeeData, setEmployeeData] = useState({
@@ -13,11 +14,10 @@ const EmpLeave = () => {
     });
 
     const [leaveData, setLeaveData] = useState({
-        title: '',
-        description: '',
-        type: 'Paid',
-        date: '',
-        documents: '',
+        type: 'paid',
+        startDate: '',
+        endDate: '',
+        reason: ''
     });
 
     const [loading, setLoading] = useState(true);
@@ -50,26 +50,23 @@ const EmpLeave = () => {
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        setLeaveData({ ...leaveData, [name]: value });
+        setLeaveData(prev => ({
+            ...prev,
+            [name]: value
+        }));
     };
-    const handleSubmit = async (e) => {
+
+    const handleSubmit = (e) => {
         e.preventDefault();
-        try {
-            const response = await fetch('https://api.example.com/leave', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(leaveData),
-            });
-            if (response.ok) {
-                alert('Leave application submitted successfully');
-            } else {
-                alert('Failed to submit leave application');
-            }
-        } catch (error) {
-            console.error('Error submitting leave application:', error);
-        }
+        // Simulate successful leave submission
+        toast.success('Leave application submitted successfully');
+        // Reset form
+        setLeaveData({
+            type: 'paid',
+            startDate: '',
+            endDate: '',
+            reason: ''
+        });
     };
 
     if (loading) {
@@ -121,29 +118,6 @@ const EmpLeave = () => {
                 </div>
                 <form onSubmit={handleSubmit} className="space-y-6">
                     <div>
-                        <label htmlFor="title" className="block">Title:</label>
-                        <input
-                            type="text"
-                            id="title"
-                            name="title"
-                            value={leaveData.title}
-                            onChange={handleInputChange}
-                            className="border p-2 rounded-md w-full"
-                            required
-                        />
-                    </div>
-                    <div>
-                        <label htmlFor="description" className="block">Description:</label>
-                        <textarea
-                            id="description"
-                            name="description"
-                            value={leaveData.description}
-                            onChange={handleInputChange}
-                            className="border p-2 rounded-md w-full"
-                            required
-                        />
-                    </div>
-                    <div>
                         <label htmlFor="type" className="block">Type:</label>
                         <select
                             id="type"
@@ -153,32 +127,43 @@ const EmpLeave = () => {
                             className="border p-2 rounded-md w-full"
                             required
                         >
-                            <option value="Paid">Paid</option>
-                            <option value="Unpaid">Unpaid</option>
+                            <option value="paid">Paid</option>
+                            <option value="unpaid">Unpaid</option>
                         </select>
                     </div>
                     <div>
-                        <label htmlFor="date" className="block">Date:</label>
+                        <label htmlFor="startDate" className="block">Start Date:</label>
                         <input
                             type="date"
-                            id="date"
-                            name="date"
-                            value={leaveData.date}
+                            id="startDate"
+                            name="startDate"
+                            value={leaveData.startDate}
                             onChange={handleInputChange}
                             className="border p-2 rounded-md w-full"
                             required
                         />
                     </div>
                     <div>
-                        <label htmlFor="documents" className="block">Documents:</label>
+                        <label htmlFor="endDate" className="block">End Date:</label>
                         <input
-                            type="text"
-                            id="documents"
-                            name="documents"
-                            value={leaveData.documents}
+                            type="date"
+                            id="endDate"
+                            name="endDate"
+                            value={leaveData.endDate}
                             onChange={handleInputChange}
                             className="border p-2 rounded-md w-full"
-                            placeholder="Link to the documents"
+                            required
+                        />
+                    </div>
+                    <div>
+                        <label htmlFor="reason" className="block">Reason:</label>
+                        <textarea
+                            id="reason"
+                            name="reason"
+                            value={leaveData.reason}
+                            onChange={handleInputChange}
+                            className="border p-2 rounded-md w-full"
+                            required
                         />
                     </div>
                     <button type="submit" className="bg-primary text-white px-4 py-1 rounded">Submit</button>

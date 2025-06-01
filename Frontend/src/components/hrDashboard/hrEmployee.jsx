@@ -1,17 +1,42 @@
 import React, { useState, useEffect } from 'react';
 import useAuth from '../context/user.context';
-import axios from 'axios';
 import { toast } from 'react-toastify';
-// import employee from '../../../../Backend/src/models/employee.model';
 
 const HrEmployee = () => {
-    const baseURL = 'http://localhost:8000/HRMS/api';
-    const [employees, setEmployees] = useState([]);
-    const [rerender, setRerender] = useState(false);
-    const [addnewemployee, setAddnewemployee] = useState(false);
+    const [employees, setEmployees] = useState([
+        {
+            id: 1,
+            user: 'john.doe@example.com',
+            username: 'John Doe',
+            phone: '123-456-7890',
+            address: '123 Main St',
+            admin: false,
+            role: 'Developer',
+            location: 'Remote',
+            Salary: '5000',
+            paid_leave: '20',
+            unpaid_leave: '10',
+            attendance: '95%'
+        },
+        {
+            id: 2,
+            user: 'jane.smith@example.com',
+            username: 'Jane Smith',
+            phone: '098-765-4321',
+            address: '456 Oak St',
+            admin: false,
+            role: 'Designer',
+            location: 'Office',
+            Salary: '4500',
+            paid_leave: '18',
+            unpaid_leave: '8',
+            attendance: '92%'
+        }
+    ]);
+
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [isEditing, setIsEditing] = useState(false); // Track if editing or adding
-    const [selectedEmployeeId, setSelectedEmployeeId] = useState(null); // To track the employee being edited
+    const [isEditing, setIsEditing] = useState(false);
+    const [selectedEmployeeId, setSelectedEmployeeId] = useState(null);
     const [newEmployee, setNewEmployee] = useState({
         user: '',
         username: '',
@@ -26,31 +51,6 @@ const HrEmployee = () => {
         unpaid_leave: '',
         attendance: ''
     });
-    const { user } = useAuth();
-
-    const extract_date = (data) => {
-        const dateString = data;
-        const dateObject = new Date(dateString);
-        const year = dateObject.getFullYear();
-        const month = dateObject.getMonth() + 1; // Months are 0-based, so add 1
-        const day = dateObject.getDate();
-        const formattedDate = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
-        return formattedDate;
-    };
-
-    useEffect(() => {
-        const fetchEmployees = async () => {
-            try {
-                const resp = await axios.get(baseURL + '/employee/organization/' + user.organization, { withCredentials: true });
-                setEmployees(resp.data.data);
-                console.log(resp.data.data);
-            } catch (error) {
-                console.error('Error fetching employee data:', error);
-            }
-        };
-        fetchEmployees();
-        setRerender(false);
-    }, [rerender]);
 
     const handleInputChange = (e) => {
         const { name, value, type, checked } = e.target;
@@ -60,82 +60,51 @@ const HrEmployee = () => {
         });
     };
 
-    const handleAddEmployee = async () => {
-        try {
-            newEmployee.organization = user.organization;
-            console.log(newEmployee);
-            const response = await axios.post(baseURL + '/employee/', newEmployee, { withCredentials: true });
-            console.log(response);
-            if (response.data.StatusCode === 200) {
-                setAddnewemployee(false);
-                setRerender(!rerender);
-                toast.success('Employee added successfully');
-                setNewEmployee(response.data.data);
-                setIsModalOpen(false);
-            }
-            // setEmployees([...employees, response.data.data]);
-        } catch (error) {
-            console.error('Error adding new employee:', error);
-        }
-    };
-
-    const handleEditEmployee = async () => {
-        try {
-            // console.log(newEmployee);
-            const response = await axios.put(baseURL + '/employee/' + newEmployee.user, newEmployee, { withCredentials: true });
-            if (response.data.StatusCode === 200) {
-                console.log(response);
-                setEmployees(
-                    employees.map(emp => (emp.id === selectedEmployeeId ? response.data.data : emp))
-                );
-                console.log(employees);
-                setIsModalOpen(false);
-                setIsEditing(false);
-                setSelectedEmployeeId(null);
-                setRerender(!rerender);
-                toast.success('Employee updated successfully');
-            }
-            console.log(response);
-        } catch (error) {
-            console.error('Error editing employee:', error);
-        }
-    };
-
-    const handleDeleteEmployee = async (employee) => {
-        try {
-            if (!window.confirm('Are you sure you want to delete this employee?')) return;
-            if (employee.role === 'Owner') {
-                alert('Cannot delete owner');
-                return;
-            }
-            await axios.delete(baseURL + '/employee/' + employee.id, { withCredentials: true });
-            setRerender(!rerender);
-            // setEmployees(employees.filter(emp => emp.id !== id));
-
-        } catch (error) {
-            console.error('Error deleting employee:', error);
-        }
-    };
-
-    const handleEditClick = (employee) => {
+    const handleAddEmployee = () => {
+        const newId = employees.length + 1;
+        const employeeToAdd = {
+            ...newEmployee,
+            id: newId
+        };
+        setEmployees([...employees, employeeToAdd]);
+        setIsModalOpen(false);
+        toast.success('Employee added successfully');
         setNewEmployee({
-            id: employee.id,
-            user: employee.user,
+            user: '',
             username: '',
             password: '',
-            phone: employee.phone,
-            address: employee.address || '',
-            admin: employee.admin,
-            role: employee.role,
-            location: employee.location,
-            Salary: employee.Salary,
-            paid_leave: employee.paid_leave,
-            unpaid_leave: employee.unpaid_leave,
-            attendance: employee.attendance || ''
+            phone: '',
+            address: '',
+            admin: false,
+            role: '',
+            location: 'Remote',
+            Salary: '',
+            paid_leave: '',
+            unpaid_leave: '',
+            attendance: ''
         });
-        setIsEditing(true);
-        setSelectedEmployeeId(employee.id);
-        setIsModalOpen(true);
+    };
+
+    const handleEditEmployee = () => {
+        setEmployees(
+            employees.map(emp => 
+                emp.id === selectedEmployeeId ? { ...newEmployee, id: selectedEmployeeId } : emp
+            )
+        );
+        setIsModalOpen(false);
+        setIsEditing(false);
+        setSelectedEmployeeId(null);
+        toast.success('Employee updated successfully');
+    };
+
+    const handleDeleteEmployee = (employee) => {
+        if (!window.confirm('Are you sure you want to delete this employee?')) return;
+        if (employee.role === 'Owner') {
+            toast.error('Cannot delete owner');
+            return;
+        }
+        setEmployees(employees.filter(emp => emp.id !== employee.id));
+        toast.success('Employee deleted successfully');
     };
 
     return (
@@ -145,7 +114,6 @@ const HrEmployee = () => {
                 <button
                     className="bg-primary text-white px-4 py-2 rounded"
                     onClick={() => {
-                        setAddnewemployee(true);
                         setIsEditing(false);
                         setNewEmployee({
                             username: '',

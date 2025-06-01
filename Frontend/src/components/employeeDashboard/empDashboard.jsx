@@ -2,12 +2,12 @@ import React, { useState, useEffect } from "react";
 
 const EmpDashboard = () => {
     const [leaveData, setLeaveData] = useState({
-        totalAllowance: 0,
-        paid: 0,
-        unpaid: 0,
-        taken: 0,
-        available: 0,
-        pending: 0
+        totalAllowance: 20,
+        paid: 15,
+        unpaid: 5,
+        taken: 3,
+        available: 17,
+        pending: 2
     });
 
     const [timeLog, setTimeLog] = useState({
@@ -24,32 +24,23 @@ const EmpDashboard = () => {
         }
     });
 
-
-    const [announcements, setAnnouncements] = useState([]);
+    const [announcements, setAnnouncements] = useState([
+        {
+            id: 1,
+            title: "Company Holiday",
+            message: "Office will be closed on December 25th for Christmas",
+            date: "2024-12-20"
+        },
+        {
+            id: 2,
+            title: "New Policy Update",
+            message: "Remote work policy has been updated. Please check the HR portal for details.",
+            date: "2024-12-15"
+        }
+    ]);
 
     useEffect(() => {
-
-        const fetchLeaveData = async () => {
-            const response = await fetch("https://dummyapi.io/leaveData");
-            const data = await response.json();
-            setLeaveData(data);
-        };
-
-        const fetchTimeLog = async () => {
-            const response = await fetch("https://dummyapi.io/timeLog");
-            const data = await response.json();
-            setTimeLog(data);
-        };
-
-        const fetchAnnouncements = async () => {
-            const response = await fetch("https://dummyapi.io/announcements");
-            const data = await response.json();
-            setAnnouncements(data);
-        };
-
-        fetchLeaveData();
-        fetchTimeLog();
-        fetchAnnouncements();
+        // Data is already set in the initial state
     }, []);
 
     return (
@@ -172,9 +163,9 @@ const EmpDashboard = () => {
                             {announcements.map((announcement, index) => (
                                 <tr key={index}>
                                     <td className="text-start border px-4 py-3 whitespace-nowrap">{announcement.title}</td>
-                                    <td className="text-start border px-4 py-3 whitespace-nowrap">{announcement.startDate}</td>
-                                    <td className="text-start border px-4 py-3 whitespace-nowrap">{announcement.endDate}</td>
-                                    <td className="text-start border px-4 py-3 whitespace-nowrap">{announcement.description}</td>
+                                    <td className="text-start border px-4 py-3 whitespace-nowrap">{announcement.date}</td>
+                                    <td className="text-start border px-4 py-3 whitespace-nowrap">{announcement.date}</td>
+                                    <td className="text-start border px-4 py-3 whitespace-nowrap">{announcement.message}</td>
                                 </tr>
                             ))}
                         </tbody>

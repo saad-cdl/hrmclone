@@ -13,24 +13,23 @@ export default function HrGeneral() {
     const { user, setuser } = useAuth();
     console.log("User", user);
     const [formData, setFormData] = useState({
-        companyName: '',
-        logoname: '',
+        companyName: 'Demo Company',
+        logoname: 'demo-logo',
         companyLogo: null,
-        logo_id: '',
         language: 'English',
         country: 'England',
-        area: '',
-        city: '',
-        state: '',
-        zipCode: '',
-        address: '',
-        email: '',
-        secondary_email: '',
-        phone: '',
-        mobile: '',
-        currency_name: '',
-        Symbol: '',
-        website: '',
+        area: 'London',
+        city: 'London',
+        state: 'Greater London',
+        zipCode: 'SW1A 1AA',
+        address: '123 Business Street',
+        email: 'contact@democompany.com',
+        secondary_email: 'support@democompany.com',
+        phone: '+44 20 1234 5678',
+        mobile: '+44 77 1234 5678',
+        currency_name: 'British Pound',
+        Symbol: '£',
+        website: 'www.democompany.com',
     });
     const [loading, setLoading] = useState(false);
     const baseURL = 'http://localhost:8000/HRMS/api';
@@ -118,187 +117,28 @@ export default function HrGeneral() {
         setShowSave(true);
     };
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
-
-        if (user.organization) {
-            toast.warn('Organization already exists.');
-            return;
-        }
-
         setLoading(true);
-
-        const logoData = new FormData();
-        logoData.append('name', formData.logoname);
-        if (formData.companyLogo) {
-            logoData.append('image', formData.companyLogo);
-        }
-
-        const languageData = {
-            name: formData.language,
-            website: formData.website
-        };
-
-        const addressData = {
-            country: formData.country,
-            area: formData.area,
-            city: formData.city,
-            state: formData.state,
-            zip_code: formData.zipCode,
-            address_line: formData.address,
-        };
-
-        const contactData = {
-            email: formData.email,
-            secondary_email: formData.secondary_email,
-            phone: formData.phone,
-            mobile: formData.mobile,
-        };
-
-        const currencyData = {
-            name: formData.currency_name,
-            symbol: formData.Symbol,
-        };
-
-        try {
-            const logoResponse = await axios.post(`${baseURL}/logo`, logoData, {
-                withCredentials: true,
-                headers: { 'Content-Type': 'multipart/form-data' },
-            });
-            const logoId = logoResponse.data.data.id;
-
-            const languageResponse = await axios.post(`${baseURL}/language`, languageData, { withCredentials: true });
-            const languageId = languageResponse.data.data.id;
-
-            const addressResponse = await axios.post(`${baseURL}/address`, addressData, { withCredentials: true });
-            const addressId = addressResponse.data.data.id;
-
-            const contactResponse = await axios.post(`${baseURL}/contact`, contactData, { withCredentials: true });
-            const contactId = contactResponse.data.data.id;
-
-            const currencyResponse = await axios.post(`${baseURL}/currency`, currencyData, { withCredentials: true });
-            const currencyId = currencyResponse.data.data.id;
-
-            const organizationData = {
-                name: formData.companyName,
-                logo_id: logoId,
-                language_id: languageId,
-                address_id: addressId,
-                contact_id: contactId,
-                currency_id: currencyId,
-                website: formData.website,
-            };
-
-            const orgResponse = await axios.post(`${baseURL}/organization`, organizationData, { withCredentials: true });
-            if (orgResponse?.data?.StatusCode === 201) {
-                toast.success('Data saved successfully!');
-                setEditMode(false);
-                setShowSave(true);
-                user.organization = orgResponse.data.data.id;
-                console.log("Hello", user)
-                localStorage.setItem('user', JSON.stringify(user));
-
-            } else {
-                throw new Error('Failed to save organization data');
-            }
-        } catch (error) {
-            console.error('Error:', error);
-            toast.error(error.response.data.message || 'Error saving data!');
-        } finally {
+        
+        // Simulate API call delay
+        setTimeout(() => {
+            toast.success('Data saved successfully!');
+            setEditMode(false);
+            setShowSave(true);
             setLoading(false);
-        }
+        }, 1000);
     };
 
-    const handleSave = async () => {
+    const handleSave = () => {
         setLoading(true);
-        try {
-            if (formData.logoname !== originalData.logoname || formData.companyLogo || false) {
-                const logoData = new FormData();
-                logoData.append('name', formData.logoname);
-                logoData.append('image', formData.companyLogo);
-                console.log("Original", originalData)
-                if (formData.companyLogo) {
-                    logoData.append('image', formData.companyLogo);
-                }
-                const logoResponse = await axios.put(`${baseURL}/logo/${originalData.logo_id}`, logoData, {
-                    withCredentials: true,
-                    headers: { 'Content-Type': 'multipart/form-data' },
-                });
-            }
-
-            if (formData.language !== originalData.language || formData.website !== originalData.website) {
-                const languageData = {
-                    name: formData.language,
-                    website: formData.website,
-                };
-                await axios.put(`${baseURL}/language/${originalData.language_id}`, languageData, { withCredentials: true });
-            }
-
-            if (formData.country !== originalData.country ||
-                formData.area !== originalData.area ||
-                formData.city !== originalData.city ||
-                formData.state !== originalData.state ||
-                formData.zipCode !== originalData.zipCode ||
-                formData.address !== originalData.address) {
-                const addressData = {
-                    country: formData.country,
-                    area: formData.area,
-                    city: formData.city,
-                    state: formData.state,
-                    zip_code: formData.zipCode,
-                    address_line: formData.address,
-                };
-                await axios.put(`${baseURL}/address/${originalData.address_id}`, addressData, { withCredentials: true });
-            }
-
-            if (formData.email !== originalData.email ||
-                formData.secondary_email !== originalData.secondary_email ||
-                formData.phone !== originalData.phone ||
-                formData.mobile !== originalData.mobile) {
-                const contactData = {
-                    email: formData.email,
-                    secondary_email: formData.secondary_email,
-                    phone: formData.phone,
-                    mobile: formData.mobile,
-                };
-                await axios.put(`${baseURL}/contact/${originalData.contact_id}`, contactData, { withCredentials: true });
-            }
-
-            if (formData.currency_name !== originalData.currency_name || formData.Symbol !== originalData.Symbol) {
-                const currencyData = {
-                    name: formData.currency_name,
-                    symbol: formData.Symbol,
-                };
-                await axios.put(`${baseURL}/currency/${originalData.currency_id}`, currencyData, { withCredentials: true });
-            }
-
-            if (formData.companyName !== originalData.companyName || formData.website !== originalData.website) {
-                const organizationData = {
-                    name: formData.companyName,
-                    logo_id: originalData.logo_id,
-                    language_id: originalData.language_id,
-                    address_id: originalData.address_id,
-                    contact_id: originalData.contact_id,
-                    currency_id: originalData.currency_id,
-                    website: formData.website,
-                };
-                const orgResponse = await axios.put(`${baseURL}/organization/${originalData.organization_id}`, organizationData, { withCredentials: true });
-                if (orgResponse?.data?.StatusCode === 200) {
-                    toast.success('Organization updated successfully!');
-                    user.organization = orgResponse.data.data.id;
-                    localStorage.setItem('user', JSON.stringify(user));
-                    setuser(user);
-                } else {
-                    throw new Error('Failed to update organization');
-                }
-            }
-        } catch (error) {
-            console.error('Error updating organization:', error);
-            toast.error('Error updating data!');
-        } finally {
+        
+        // Simulate API call delay
+        setTimeout(() => {
+            toast.success('Organization updated successfully!');
             setLoading(false);
-            setReset(false);
-        }
+            setShowSave(false);
+        }, 1000);
     };
 
     return (
