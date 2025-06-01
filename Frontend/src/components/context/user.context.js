@@ -3,8 +3,8 @@ import { createContext, useContext } from "react";
 
 // Create the AuthContext
 export const AuthContext = createContext({
-  isAuthenticated: false,
-  user: {},
+  isAuthenticated: true,
+  user: { name: 'Demo HR', email: 'hr@demo.com', role: 'admin' },
   setisAuthenticated: () => {},
   setuser: () => {},
   newuser: false,

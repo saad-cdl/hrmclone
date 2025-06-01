@@ -3,26 +3,17 @@ import backgroundImage from '../assets/Container.jpg';
 import Logo from '../assets/Logo.png';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import axios from "axios";
 
 const ForgetPassword = () => {
     const [email, setemail] = React.useState("");
     const navigate = useNavigate();
     const requestforgetpassword = async (event) => {
         event.preventDefault();
-        try {
-            const resp = await axios.post("http://localhost:8000/HRMS/api/user/forgetpassword", {
-                email: email
-            }, { withCredentials: true })
-            if (resp) {
-                console.log(resp.data);
-                toast.success("Email Received");
-                navigate("/confirm-password/email:" + email);
-            }
-        } catch (error) {
-            console.log(error.response.data);
-            toast.error("Invalid Email Address");
-        }
+        // Simulate success
+        setTimeout(() => {
+            toast.success("Email Received (dummy)");
+            navigate("/confirm-password/email:" + email);
+        }, 500);
     }
     const handleLoginRedirect = () => {
         navigate('/');

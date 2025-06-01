@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
-import axios from "axios";
 import Logo from "../assets/Logo.png";
+import { toast } from 'react-toastify';
 
 const Dashboard = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -33,29 +33,19 @@ const Dashboard = () => {
         document.addEventListener("click", handleClickOutside);
         return () => document.removeEventListener("click", handleClickOutside);
     }, []);
-    const handleLogout = async () => {
-        try {
-            const resp = await axios.post(
-                'http://localhost:8000/HRMS/api/user/logout',
-                {},
-                { withCredentials: true }
-            );
-            if (resp.status === 200) {
-                console.log('Logout successful:', resp);
-                navigate('/login');
-            }
-        } catch (error) {
-            console.error('Failed to log out:', error);
-        }
+    const handleLogout = () => {
+        toast.success('Logged out (dummy)');
+        navigate('/login');
     };
+
     return (
         <div className="relative flex font-inter bg-pink-200">
             <div
                 id="sidebar"
                 className={`lg:fixed -translate-x-full z-50 lg:z-auto text-white ease-in-out 
                 absolute h-full min-h-screen overflow-auto scrollbar-none lg:top-0 left-0 w-56 p-3 transition-transform duration-500 transform
-                bg-white shadow-lg space-y-6 ${isSidebarOpen ? "translate-x-0" : ""}`}
-            >
+                bg-white shadow-lg space-y-6 ${isSidebarOpen ? "translate-x-0" : ""}`}>
+
                 <div className="flex items-center justify-center">
                     <img src={Logo} className="h-12" alt="Logo" />
                 </div>
@@ -72,7 +62,7 @@ const Dashboard = () => {
                         </li>
                         <li className="hover:bg-primary text-gray-800 hover:text-white rounded-md px-3 py-2">
                             <NavLink to="/emp-dboard/leave" className="flex items-center justify-start gap-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15M12 9l-3 3m0 0 3 3m-3-3h12.75" />
                                 </svg>
                                 <span className="font-medium">Leave</span>
@@ -84,6 +74,22 @@ const Dashboard = () => {
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                                 </svg>
                                 <span className="font-medium">Attendance</span>
+                            </NavLink>
+                        </li>
+                        <li className="hover:bg-primary text-gray-800 hover:text-white rounded-md px-3 py-2">
+                            <NavLink to="/emp-dboard/employee-leave-history" className="flex items-center justify-start gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 15 12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9" />
+                                </svg>
+                                <span className="font-medium">Leave History</span>
+                            </NavLink>
+                        </li>
+                        <li className="hover:bg-primary text-gray-800 hover:text-white rounded-md px-3 py-2">
+                            <NavLink to="/emp-dboard/employee-attendance-history" className="flex items-center justify-start gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+                                </svg>
+                                <span className="font-medium">Attendance History</span>
                             </NavLink>
                         </li>
                     </ul>
@@ -98,8 +104,8 @@ const Dashboard = () => {
 
             <div
                 id="main-content"
-                className={`border w-full font-inter transition-all duration-500 lg:ml-0 bg-white  overflow-hidden ${isSidebarOpen ? "lg:ml-56" : ""}`}
-            >
+                className={`border w-full font-inter transition-all duration-500 lg:ml-0 bg-white overflow-hidden ${isSidebarOpen ? "lg:ml-56" : ""}`}>
+
                 <div className="bg-white p-4 shadow">
                     <div className="flex items-center justify-between">
                         <div
@@ -121,7 +127,6 @@ const Dashboard = () => {
                 </div>
                 <section className="flex-1 w-full p-4 bg-gray-100">
                     <Outlet />
-
                 </section>
             </div>
         </div>

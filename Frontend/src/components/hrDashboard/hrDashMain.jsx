@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
-import axios from "axios";
 import Logo from "../assets/Logo.png";
+import { toast } from 'react-toastify';
 
 const Dashboard = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -45,23 +45,10 @@ const Dashboard = () => {
         document.addEventListener("click", handleClickOutside);
         return () => document.removeEventListener("click", handleClickOutside);
     }, []);
-    const handleLogout = async () => {
-        try {
-            const resp = await axios.post(
-                'http://localhost:8000/HRMS/api/user/logout',
-                {},  // Empty body
-                { withCredentials: true } // Configuration object for axios
-            );
-            if (resp.status === 200) {
-                localStorage.removeItem('user');
-                console.log('Logout successful:', resp);
-                navigate('/login');
-            }
-        } catch (error) {
-            console.error('Failed to log out:', error);
-        }
+    const handleLogout = () => {
+        toast.success('Logged out (dummy)');
+        navigate('/login');
     };
-
 
     return (
         <div className="relative flex font-inter bg-pink-200">
@@ -103,7 +90,7 @@ const Dashboard = () => {
                         </li>
                         <li className="hover:bg-primary text-gray-800 hover:text-white rounded-md px-3 py-2">
                             <NavLink to="/hr-dboard/leave" className="flex items-center justify-start gap-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-6 h-6">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15M12 9l-3 3m0 0 3 3m-3-3h12.75" />
                                 </svg>
                                 <span className="font-medium">Leave</span>
@@ -152,7 +139,7 @@ const Dashboard = () => {
                                     </li>
                                     <li className="hover:bg-primary text-gray-800 hover:text-white rounded-md px-3 py-2">
                                         <NavLink to="/hr-dboard/setting/announcement" className="flex items-center justify-start gap-2">
-                                            <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                            <svg className="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 9H5a1 1 0 0 0-1 1v4a1 1 0 0 0 1 1h6m0-6v6m0-6 5.419-3.87A1 1 0 0 1 18 5.942v12.114a1 1 0 0 1-1.581.814L11 15m7 0a3 3 0 0 0 0-6M6 15h3v5H6v-5Z" />
                                             </svg>
                                             <span className="font-medium">Announcement</span>
