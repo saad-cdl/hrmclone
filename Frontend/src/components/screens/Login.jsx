@@ -8,52 +8,16 @@ import useAuth from '../context/user.context';
 import Cookies from "universal-cookie";
 
 const Login = () => {
-  const { user, setuser, setnewuser, newuser } = useAuth();
+  const { setuser } = useAuth();
   const [email, setemail] = useState("");
   const [password, setpassword] = useState("");
   const navigate = useNavigate();
 
   const loginuser = async (event) => {
     event.preventDefault();
-    try {
-      const resp = await axios.post(
-        "http://localhost:8000/HRMS/api/user/login",
-        {
-          email: email,
-          password: password,
-        },
-        { withCredentials: true }
-      );
-      if (resp.status === 200) {
-        console.log(resp.data.data);
-        setuser(resp.data.data);
-        if (resp.data.data.admin === true) {
-          if (resp.data.data.organization === null) {
-            // alert("Admin");
-            localStorage.setItem("user", JSON.stringify(resp.data.data));
-            setnewuser(true);
-            setuser(resp.data.data);
-            navigate("/hr-dboard/setting/general");
-            toast.success("Welcome to HRMS");
-          }
-          else {
-            localStorage.setItem("user", JSON.stringify(resp.data.data));
-            navigate("/hr-dboard");
-            toast.success("Login Successfull");
-            setuser(resp.data.data);
-          }
-        }
-        else {
-          toast.success("Login Successfull");
-          navigate("/emp-dboard");
-        }
-      }
-    } catch (error) {
-      console.log(error.response.data);
-      setemail("");
-      setpassword("");
-      toast.error("Login failed");
-    }
+    // Directly navigate to hr-dboard
+    navigate("/hr-dboard");
+    toast.success("Login Successful");
   };
 
   const handleSignupClick = () => {
